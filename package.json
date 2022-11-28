@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/toddteigland/tinyapp#readme",
   "dependencies": {
+    "ejs": "^3.1.8",
     "epxress": "0.0.1-security",
     "express": "^4.18.2"
   }
