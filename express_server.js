@@ -29,6 +29,8 @@ app.get("/u/:id", (req, res) => {
   res.redirect(longURL);
 });
 
+//Receives the input from the form and creates a short URL, and adds it and the long version 
+//  to the database. Also then creates a redirect link.
 app.post("/urls", (req, res) => {
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
