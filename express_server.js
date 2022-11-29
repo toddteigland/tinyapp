@@ -15,14 +15,17 @@ function generateRandomString() {
   return RdmNum;
 }
 
+// HOMEPAGE REQUEST THAT SHOWS THE DATABASE
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
+// SHOWS 'NEW' PAGE WHICH SHOWS THE FORM TO ENTER A 'NEW' URL
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
+
 
 app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id];
@@ -39,6 +42,21 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+
+// DELETE
+app.post("/urls/:id/delete", (req, res) => {
+  console.log("Delete button has been clicked", urlDatabase)
+  const templateVars = {
+  id: req.params.id,
+  };
+  delete urlDatabase[req.params.id]
+  res.redirect(`/urls`)
+});
+
+
+
+
+// ADD NEW
 app.get("/urls/:id", (req, res) => {
   const templateVars = { 
     id: req.params.id, 
@@ -48,5 +66,5 @@ app.get("/urls/:id", (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`Tiny URL app listening on port ${PORT}!`);
 });
