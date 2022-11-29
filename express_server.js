@@ -45,18 +45,22 @@ app.post("/urls", (req, res) => {
 
 // DELETE
 app.post("/urls/:id/delete", (req, res) => {
-  console.log("Delete button has been clicked", urlDatabase)
-  const templateVars = {
-  id: req.params.id,
-  };
+  console.log("Delete button has been clicked", urlDatabase);
+  const templateVars = { id: req.params.id};
   delete urlDatabase[req.params.id]
   res.redirect(`/urls`)
 });
 
+// UPDATE
+app.post("/urls/:id/update", (req, res) => {
+  console.log("Update button has been clicked", urlDatabase);
+  const templateVars = { id: req.params.id };
+  urlDatabase[req.params.id] = req.body.longURL;
+    res.redirect("/urls")
+});
 
 
-
-// ADD NEW
+// RESULTS PAGE AFTER CREATING TINY URL. ALSO INCLUDES CLICKABLE LINK TO THE NEW TINY URL
 app.get("/urls/:id", (req, res) => {
   const templateVars = { 
     id: req.params.id, 
