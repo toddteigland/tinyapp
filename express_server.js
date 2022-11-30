@@ -12,24 +12,30 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+};
+
+
 function generateRandomString() {
   let RdmNum = Math.random().toString(36).substring(3, 9);
   return RdmNum;
 }
 
-// HOMEPAGE REQUEST THAT SHOWS THE DATABASE
+// HOMEPAGE REQUEST THAT SHOWS THE DATABASE OF URLS
 app.get("/urls", (req, res) => {
+  const user_id = req.cookies['user_id'];
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies["username"],
+    user: users[user_id]
   };
   res.render("urls_index", templateVars);
 });
 
 // SHOWS 'NEW' PAGE WHICH SHOWS THE FORM TO ENTER A 'NEW' URL
 app.get("/urls/new", (req, res) => {
+  const user_id = req.cookies['user_id'];
   const templateVars = {
-    username: req.cookies["username"],
+    user: users[user_id],
   };
   res.render("urls_new", templateVars);
 });
@@ -67,17 +73,36 @@ app.post("/urls/:id/update", (req, res) => {
   res.redirect("/urls");
 });
 
+// REGISTER
+app.get("/register", (req, res) => {
+  res.render("urls_register");
+});
+
+app.post("/urls_register", (req, res) => {
+  console.log("Register button has been clicked!", "req.body:", req.body);
+  console.log("users:", users);
+  const user = {};
+  user.id = generateRandomString();
+  user.email = req.body.email;
+  user.password = req.body.password;
+  users[user.id] = user;
+
+  console.log("users:", users);
+  res.cookie('user_id', users[user.id].id);
+  res.redirect("/urls");
+});
+
 // LOG IN
 app.post("/login", (req, res) => {
   console.log("Log In button has been clicked");
-  res.cookie('username', req.body.username);
+  res.cookie('user_id', users[user.id].id);
   res.redirect("/urls");
 });
 
 // LOG OUT
 app.post("/logout", (req, res) => {
-  console.log("Logout button has been clicked");
-  res.clearCookie('username', req.body.username);
+  console.log("Logout button has been clicked and cookies cleared");
+  res.clearCookie('user_id');
   res.redirect("/urls");
 });
 
@@ -85,9 +110,10 @@ app.post("/logout", (req, res) => {
 
 // RESULTS PAGE AFTER CREATING TINY URL. ALSO INCLUDES CLICKABLE LINK TO THE NEW TINY URL
 app.get("/urls/:id", (req, res) => {
+  const user_id = req.cookies['user_id'];
   const templateVars = {
     id: req.params.id,
-    username: req.cookies["username"],
+    user: users[user_id],
     longURL: urlDatabase[req.params.id]
   };
   res.render("urls_show", templateVars);

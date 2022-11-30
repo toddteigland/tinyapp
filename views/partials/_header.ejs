@@ -9,8 +9,8 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <% if(username){%>
-          <h4>Logged in as: <%=username%>
+        <% if(user){%>
+          <h4>Logged in as: <%=user.email%>
           </h4>
           <form method="POST" action="/logout">
             <td><button type="submit" class="btn btn-primary">Logout</button></td>
@@ -19,6 +19,7 @@
             <form method="POST" action="/login">
               <input type="text" placeholder="username" name="username">
               <td><button type="submit" class="btn btn-primary">Login</button></td>
+              <!-- <td><button type="submit" class="btn btn-primary">Register</button></td> -->
             </form>
             <% }%>
       </div>
