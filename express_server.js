@@ -15,6 +15,14 @@ const urlDatabase = {
 const users = {
 };
 
+const findUserEmail = (email) => {
+  for (let user in users) {
+    if (email === users[user].email) {
+      return users[user];
+    }
+  }
+  return null;
+};
 
 function generateRandomString() {
   let RdmNum = Math.random().toString(36).substring(3, 9);
@@ -28,6 +36,7 @@ app.get("/urls", (req, res) => {
     urls: urlDatabase,
     user: users[user_id]
   };
+  console.log('templateVars', templateVars)
   res.render("urls_index", templateVars);
 });
 
@@ -56,7 +65,6 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-
 // DELETE
 app.post("/urls/:id/delete", (req, res) => {
   console.log("Delete button has been clicked", urlDatabase);
@@ -75,22 +83,39 @@ app.post("/urls/:id/update", (req, res) => {
 
 // REGISTER
 app.get("/register", (req, res) => {
-  res.render("urls_register");
+  const user_id = req.cookies['user_id'];
+  const templateVars = {
+    user: users[user_id],
+  };
+  res.render("urls_register", templateVars);
 });
 
+
 app.post("/urls_register", (req, res) => {
-  console.log("Register button has been clicked!", "req.body:", req.body);
-  console.log("users:", users);
+  console.log("Register button has been clicked!",);
+  console.log("HELP ME!!!", users.email);
+  if (req.body.email === '') {
+    return res.status(400).send('Email cannot be empty');
+  }
+  if (req.body.password === '') {
+    return res.status(400).send('Email cannot be empty');
+  }
+  if (findUserEmail(req.body.email)) {
+    return res.status(400).send('Email already registered');
+
+  };
+
   const user = {};
   user.id = generateRandomString();
   user.email = req.body.email;
   user.password = req.body.password;
   users[user.id] = user;
-
   console.log("users:", users);
   res.cookie('user_id', users[user.id].id);
   res.redirect("/urls");
+
 });
+
 
 // LOG IN
 app.post("/login", (req, res) => {
