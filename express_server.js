@@ -36,7 +36,6 @@ app.get("/urls", (req, res) => {
     urls: urlDatabase,
     user: users[user_id]
   };
-  console.log('templateVars', templateVars)
   res.render("urls_index", templateVars);
 });
 
@@ -61,7 +60,6 @@ app.post("/urls", (req, res) => {
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = longURL;
-  console.log(req.body); // Log the POST request body to the console
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -89,46 +87,56 @@ app.get("/register", (req, res) => {
   };
   res.render("urls_register", templateVars);
 });
-
-
 app.post("/urls_register", (req, res) => {
   console.log("Register button has been clicked!",);
-  console.log("HELP ME!!!", users.email);
   if (req.body.email === '') {
+    console.log('Empty email register attempt');
     return res.status(400).send('Email cannot be empty');
   }
   if (req.body.password === '') {
+    console.log('Empty password register attempt');
     return res.status(400).send('Email cannot be empty');
   }
   if (findUserEmail(req.body.email)) {
+    console.log(`Email already registered => ${req.body.email}`);
     return res.status(400).send('Email already registered');
 
   };
-
   const user = {};
   user.id = generateRandomString();
   user.email = req.body.email;
   user.password = req.body.password;
   users[user.id] = user;
-  console.log("users:", users);
   res.cookie('user_id', users[user.id].id);
   res.redirect("/urls");
-
 });
 
 
 // LOG IN
-app.post("/login", (req, res) => {
+app.get("/login", (req, res) => {
+  const user_id = req.cookies['user_id'];
+  const templateVars = {
+    user: users[user_id],
+  };
+  res.render("urls_login", templateVars);
+});
+app.post("/urls_login", (req, res) => {
   console.log("Log In button has been clicked");
-  res.cookie('user_id', users[user.id].id);
-  res.redirect("/urls");
+  if (!findUserEmail(req.body.email)) {
+    return res.status(403).send('Email not registered');
+  }
+  if (findUserEmail(req.body.email).password !== req.body.password) {
+    return res.status(403).send('Password does not match')
+  }
+  res.cookie('user_id', findUserEmail(req.body.email).id);
+  res.redirect("urls");
 });
 
 // LOG OUT
 app.post("/logout", (req, res) => {
   console.log("Logout button has been clicked and cookies cleared");
   res.clearCookie('user_id');
-  res.redirect("/urls");
+  res.redirect("login");
 });
 
 

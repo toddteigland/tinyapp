@@ -29,15 +29,13 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         <% if(user){%>
-          <h4>Logged in as: <%=user%>
-          </h4>
+          <h5 class="navbar-brand">Logged in as: <%=user.email%>
+          </h5>
           <form method="POST" action="/logout">
             <td><button type="submit" class="btn btn-primary">Logout</button></td>
           </form>
           <% } else{ %>
-            <form method="POST" action="/login">
-              <input type="text" placeholder="username" name="username">
-              <td><button type="submit" class="btn btn-primary">Login</button></td>
+              <td><a href="/login" class="btn btn-primary">Login</button></td>
               <a href="/register" class="btn btn-primary">Register</a>
             </form>
             <% }%>

@@ -7,16 +7,15 @@
         </h5>
         <p class="card-text">
           Short URL ID: <a href="/u/<%= id %>">
-            <%= id %>
           </a>
+            <%= id %>
         </p>
       </div>
-
-      <form class="form-inline" action="/urls/<%=id%>/update" method="POST">
+      <form class="card-title" action="/urls/<%=id%>/update" method="POST">
         <div class="form-group mb-2">
-          <label for="Update">Enter a URL:</label>
+          <label for="Update">Enter the updated URL:</label>
           <input 
-            class="form-control" 
+            class="card-title" 
             type="text" 
             name="longURL" 
             placeholder="http://"
@@ -24,6 +23,7 @@
           <button type="submit" class="btn btn-primary">Update</button>
         </div>
       </form>
+
 
       <div class="card-footer text-muted"></div>
     </div>
