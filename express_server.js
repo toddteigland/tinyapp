@@ -45,7 +45,12 @@ app.get("/urls/new", (req, res) => {
   const templateVars = {
     user: users[user_id],
   };
-  res.render("urls_new", templateVars);
+  if (!req.cookies['user_id']) {
+    console.log("Redirected to Login   page");
+    res.redirect("/login");
+  } else {
+    res.render("urls_new", templateVars);
+  };
 });
 
 
@@ -57,10 +62,14 @@ app.get("/u/:id", (req, res) => {
 //Receives the input from the form and creates a short URL, and adds it and the long version 
 //  to the database. Also then creates a redirect link.
 app.post("/urls", (req, res) => {
-  const longURL = req.body.longURL;
-  const shortURL = generateRandomString();
-  urlDatabase[shortURL] = longURL;
-  res.redirect(`/urls/${shortURL}`);
+  if (!req.cookies['user_id']) {
+    res.send("You must be logged in to shorten a URL");
+  } else {
+    const longURL = req.body.longURL;
+    const shortURL = generateRandomString();
+    urlDatabase[shortURL] = longURL;
+    res.redirect(`/urls/${shortURL}`);
+  }
 });
 
 // DELETE
@@ -85,7 +94,12 @@ app.get("/register", (req, res) => {
   const templateVars = {
     user: users[user_id],
   };
-  res.render("urls_register", templateVars);
+  if (!req.cookies['user_id']) {
+    res.render("urls_register", templateVars);
+  } else {
+    console.log("Redirected to URLS page");
+    res.redirect("urls");
+  };
 });
 app.post("/urls_register", (req, res) => {
   console.log("Register button has been clicked!",);
@@ -107,6 +121,7 @@ app.post("/urls_register", (req, res) => {
   user.email = req.body.email;
   user.password = req.body.password;
   users[user.id] = user;
+  console.log("cookie added from registering");
   res.cookie('user_id', users[user.id].id);
   res.redirect("/urls");
 });
@@ -118,7 +133,12 @@ app.get("/login", (req, res) => {
   const templateVars = {
     user: users[user_id],
   };
-  res.render("urls_login", templateVars);
+  if (!req.cookies['user_id']) {
+    res.render("urls_login", templateVars);
+  } else {
+    console.log("Redirected to URLS page");
+    res.redirect("urls");
+  };
 });
 app.post("/urls_login", (req, res) => {
   console.log("Log In button has been clicked");
@@ -126,8 +146,9 @@ app.post("/urls_login", (req, res) => {
     return res.status(403).send('Email not registered');
   }
   if (findUserEmail(req.body.email).password !== req.body.password) {
-    return res.status(403).send('Password does not match')
+    return res.status(403).send('Password does not match');
   }
+  console.log("cookie added from logging in");
   res.cookie('user_id', findUserEmail(req.body.email).id);
   res.redirect("urls");
 });
@@ -149,7 +170,11 @@ app.get("/urls/:id", (req, res) => {
     user: users[user_id],
     longURL: urlDatabase[req.params.id]
   };
-  res.render("urls_show", templateVars);
+  if (!urlDatabase[req.params.id]) {
+    res.send("URL ID does not exist");
+  } else {
+    res.render("urls_show", templateVars);
+  }
 });
 
 
