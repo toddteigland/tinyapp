@@ -2,12 +2,12 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bcrypt = require("bcryptjs");
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
 app.use(cookieSession({
   name: 'session',
   keys: ['secret'],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+}));
 
 const {
   findUserEmail
@@ -200,7 +200,7 @@ app.post("/urls_login", (req, res) => {
     return res.status(403).send('Username or Password does not match');
   }
   console.log("Session cookie added from logging in");
-  req.session.user_id = userObj.id
+  req.session.user_id = userObj.id;
   res.redirect("urls");
 });
 
