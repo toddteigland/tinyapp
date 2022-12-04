@@ -222,11 +222,22 @@ app.get("/urls/:id", (req, res) => {
     user: users[user_id],
     longURL: urlDatabase[req.params.id].longURL
   };
-  if (!urlDatabase[req.params.id]) {
-    res.send("URL ID does not exist");
+  if (user_id === urlDatabase[req.params.id].userID) {
+
+    if (!urlDatabase[req.params.id]) {
+      res.send("URL ID does not exist");
+    } else {
+      res.render("urls_show", templateVars);
+    }
   } else {
-    res.render("urls_show", templateVars);
+    res.send("You do not have access to edit this URL");
   }
+
+});
+
+// REDIRECT TO LOGIN PAGE --------------------------------------------------------------------------
+app.get("/", (req, res) => {
+  res.redirect("/login");
 });
 
 
